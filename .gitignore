@@ -1,1 +1,8 @@
-*.vcd
+
+*.log
+*.out
+*.jou
+*.str
+*.wdb
+*.tmp
+
