@@ -56,9 +56,9 @@ The system consists of:
 ## ▶️ How to Run Simulation
 
 ```bash
-iverilog -o sim lfsr_nfsr_core.v encrypt.v decrypt.v tb_16bit.v
-vvp sim
-gtkwave waveform.vcd
+iverilog -o sim/sim rtl/*.v tb/tb_lfsr_nfsr.v
+vvp sim/sim
+gtkwave sim/waveform.vcd
 ```
 
 ---
