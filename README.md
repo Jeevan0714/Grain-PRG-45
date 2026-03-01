@@ -89,10 +89,10 @@ gtkwave sim/waveform.vcd
 ---
 
 ## 👨‍💻 Author
-Jeevan R  
-Navyashree S
-Pallavi Y
-Kushal N S
+- Jeevan R  
+- Navyashree S
+- Pallavi Y
+- Kushal N S
 Electronics and Communication Engineering  
 Don Bosco Institute of Technology
 
