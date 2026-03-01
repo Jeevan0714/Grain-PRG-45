@@ -6,3 +6,5 @@
 *.wdb
 *.tmp
 *.sim
+sim/*
+*.vcd
