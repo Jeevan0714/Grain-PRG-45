@@ -93,6 +93,7 @@ gtkwave sim/waveform.vcd
 - Navyashree S
 - Pallavi Y
 - Kushal N S
+  
 Electronics and Communication Engineering  
 Don Bosco Institute of Technology
 
