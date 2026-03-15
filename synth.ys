@@ -1,0 +1,28 @@
+# 1. Read all behavioral Verilog files in the rtl folder
+read_verilog rtl/*.v
+
+# 2. Elaborate the design hierarchy
+hierarchy -check -top lfsr_nfsr_top
+
+# 3. Translate processes to netlists
+proc
+opt
+
+# 4. Map to generic gates
+techmap
+opt
+
+# 5. Map Flip-Flops to Nangate 45nm
+dfflibmap -liberty ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+
+# 6. Map combinational logic to Nangate 45nm
+abc -liberty ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+
+# 7. Flatten the hierarchy (Crucial for OpenSTA!)
+flatten
+
+# 8. Clean up
+clean
+
+# 9. Output the gate-level netlist
+write_verilog synth_netlist.v
