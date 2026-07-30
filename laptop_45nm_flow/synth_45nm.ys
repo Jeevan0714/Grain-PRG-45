@@ -1,0 +1,29 @@
+# -----------------------------------------------------------------------------
+# Laptop Yosys Synthesis Script for 45nm LFSR-NFSR PRNG
+# -----------------------------------------------------------------------------
+
+# 1. Read Verilog RTL files from rtl/
+read_verilog rtl/LFSR.v rtl/NFSR.v rtl/keystream.v rtl/encrypt.v rtl/decrypt.v rtl/lfsr_nfsr_top.v
+
+# 2. Set Top Module
+hierarchy -check -top lfsr_nfsr_top
+
+# 3. Translate RTL processes to generic gates
+proc
+opt
+
+# 4. Map Flip-Flops to 45nm Nangate Library
+dfflibmap -liberty ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+
+# 5. Map Logic Gates to 45nm Nangate Library
+abc -liberty ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+
+# 6. Flatten hierarchy for OpenSTA / OpenROAD
+flatten
+clean
+
+# 7. Write synthesized 45nm Gate-Level Netlist
+write_verilog laptop_45nm_flow/synth_netlist_45nm.v
+
+# 8. Report Cell Utilization
+stat -liberty ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
