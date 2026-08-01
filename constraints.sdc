@@ -1,24 +1,18 @@
-# 1. Read the Nangate 45nm standard cell library
-read_liberty ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+# ==============================================================================
+# Standard Synopsys Design Constraints (SDC) for Cadence Genus / Innovus
+# Target Frequency: 100 MHz (10.0 ns Period)
+# ==============================================================================
 
-# 2. Read your newly generated flattened netlist
-read_verilog synth_netlist.v
-
-# 3. Link the design to your top module
-link_design lfsr_nfsr_top
-
-# 4. Define constraints DIRECTLY here (100 MHz clock)
+# 1. Define Primary Clock (100 MHz)
 create_clock -name clk -period 10.0 [get_ports clk]
+
+# 2. Set Clock Uncertainty & Jitter
+set_clock_uncertainty 0.2 [get_clocks clk]
+
+# 3. Set Input and Output Delays (5% of clock period)
 set_input_delay  0.5 -clock clk [all_inputs]
 set_output_delay 0.5 -clock clk [all_outputs]
 
-# 5. Run the reports with clear formatting
-puts "\n=================================="
-puts "       SETUP TIMING REPORT"
-puts "=================================="
-report_checks -path_delay max -format full
-
-puts "\n=================================="
-puts "       HOLD TIMING REPORT"
-puts "=================================="
-report_checks -path_delay min -format full
+# 4. Set Driving Cell & Load Constraints
+set_driving_cell -lib_cell BUF_X1 [all_inputs]
+set_load 0.05 [all_outputs]

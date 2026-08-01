@@ -67,8 +67,8 @@ genus -gui
 
 #### Step 2: Set the 45nm Standard Cell Library
 ```tcl
-set_db target_library ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
-set_db link_library   ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+set_db target_library [list ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib ~/vlsi_libraries/nangate45/NangateOpenCellLibrary_low_temp.lib]
+set_db link_library   [get_db target_library]
 ```
 
 #### Step 3: Read your Verilog RTL files
@@ -86,11 +86,13 @@ elaborate lfsr_nfsr_top
 read_sdc constraints.sdc
 ```
 
-#### Step 6: Run Synthesis Stages
+#### Step 6: Enable Low-Power Targets (Clock Gating & Multi-Vth Leakage Reduction)
 ```tcl
+set_db leak_power_effort high
+set_db lp_insert_clock_gating true
 syn_generic
 syn_map
-syn_opt
+syn_opt -leakage_power
 ```
 
 #### Step 7: View Synthesis Reports (Area, Power, Timing)

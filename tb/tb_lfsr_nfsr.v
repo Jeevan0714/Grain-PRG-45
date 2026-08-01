@@ -4,15 +4,17 @@ module TB;
 
 reg clk;
 reg rst;
+reg enable;
 reg plaintext;
 
 wire ciphertext;
 wire decrypted_text;
 
-// Instantiate Top Module
+// Instantiate Top Module with Clock Gating Enable
 lfsr_nfsr_top dut (
     .clk(clk),
     .rst(rst),
+    .enable(enable),
     .plaintext(plaintext),
     .ciphertext(ciphertext),
     .decrypted_text(decrypted_text)
@@ -27,15 +29,20 @@ initial begin
 
     clk = 0;
     rst = 1;
+    enable = 0; // Start in Sleep / Gated Mode
     plaintext = 0;
 
     #10 rst = 0;
+    #10 enable = 1; // Enable Clock Tree for Normal Operation
 
     #10 plaintext = 1;
     #20 plaintext = 0;
     #20 plaintext = 1;
     #20 plaintext = 1;
     #20 plaintext = 0;
+
+    #20 enable = 0; // Enter Sleep Mode (Clock Gated - Zero Dynamic Power)
+    #40 enable = 1; // Wake up
 
     #50 $finish;
 end
