@@ -1,0 +1,29 @@
+# -----------------------------------------------------------------------------
+# Yosys Synthesis Script for Open-Source 45nm Flow (Laptop Execution)
+# -----------------------------------------------------------------------------
+
+# 1. Read Verilog RTL Source Files
+read_verilog flow_45nm_open_source/rtl/LFSR.v flow_45nm_open_source/rtl/NFSR.v flow_45nm_open_source/rtl/keystream.v flow_45nm_open_source/rtl/encrypt.v flow_45nm_open_source/rtl/decrypt.v flow_45nm_open_source/rtl/lfsr_nfsr_top.v
+
+# 2. Set Top Level Module
+hierarchy -check -top lfsr_nfsr_top
+
+# 3. Translate RTL processes to generic gates
+proc
+opt
+fsm
+opt
+
+# 4. Map Logic Gates and Flip-Flops
+techmap
+abc -g AND,NAND,OR,NOR,XOR,XNOR,MUX
+
+# 5. Flatten & Clean
+flatten
+clean
+
+# 6. Export Synthesized Netlist to results/
+write_verilog flow_45nm_open_source/results/synth_netlist_45nm.v
+
+# 7. Print Cell Utilization Report
+stat

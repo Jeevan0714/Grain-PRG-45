@@ -1,103 +1,86 @@
-# 🔐 Design and ASIC Implementation of Integrated LFSR–NFSR Based Pseudorandom Generator Using 45nm Technology
+# 🔐 Integrated LFSR–NFSR PRNG ASIC Design & Multi-Node ASIC Flow
 
-## 📌 Overview
-This project presents the design and ASIC implementation of an integrated LFSR–NFSR based Pseudorandom Number Generator (PRNG) for lightweight cryptographic applications.  
-The design is implemented in Verilog HDL and synthesized using OpenLane targeting 45nm technology.
+This repository contains the complete design, RTL implementation, functional verification, and ASIC physical design flows for an **Integrated LFSR–NFSR Pseudorandom Number Generator (PRNG)** targeting lightweight cryptographic and IoT security applications.
 
-## 🎯 Objectives
-- Design a high-speed PRNG using LFSR and NFSR combination
-- Implement encryption and decryption modules
-- Perform ASIC synthesis using OpenLane
-- Analyze area, power, and timing metrics
+The project is structured into **3 self-contained ASIC implementation flows**:
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Repository Architecture
 
-The system consists of:
-- Linear Feedback Shift Register (LFSR)
-- Non-Linear Feedback Shift Register (NFSR)
-- Non-linear combining function
-- Encryption module (XOR-based stream cipher)
-- Decryption module
-
----
-
-## 🧠 Working Principle
-
-1. LFSR generates linear pseudorandom sequence
-2. NFSR introduces non-linearity for enhanced security
-3. Both outputs are combined to produce keystream
-4. Plaintext ⊕ Keystream = Ciphertext
-5. Ciphertext ⊕ Keystream = Plaintext
-
----
-
-## 📂 Folder Structure
-
-- `rtl/` → Verilog source files  
-- `tb/` → Testbench files  
-- `simulation/` → Waveform outputs  
-- `synthesis/` → OpenLane configuration  
-- `docs/` → Block diagrams and project report  
-- `results/` → Area, timing, and power reports  
-
----
-
-## 🛠 Tools Used
-
-- Icarus Verilog
-- GTKWave
-- OpenLane
-- Skywater 45nm Technology
-
----
-
-## ▶️ How to Run Simulation
-
-```bash
-iverilog -o sim/sim rtl/*.v tb/tb_lfsr_nfsr.v
-vvp sim/sim
-gtkwave sim/waveform.vcd
+```
+new_lsfr/
+├── README.md                           ◄── Master Repository Guide
+│
+├── flow_130nm_skywater/                ◄── [FLOW 1] SkyWater 130nm Commercial Open-Source PDK Flow
+│   ├── rtl/                            ├── Verilog Source Code
+│   ├── tb/                             ├── Simulation Testbench
+│   ├── constraints.sdc                 ├── Sky130 SDC Constraints
+│   ├── synth_sky130nm.ys               ├── Yosys Synthesis Script
+│   ├── sta_sky130nm.tcl                ├── OpenSTA Timing Analysis Script
+│   ├── run_flow_130nm.sh               ├── 1-Click Laptop Shell Execution Script
+│   ├── SKY130NM_BEGINNERS_GUIDE.md     ├── Step-by-Step Guide
+│   └── results/                        └── Silicon Artifacts (DEF, GDSII, Netlists)
+│
+├── flow_45nm_cadence/                  ◄── [FLOW 2] Nangate 45nm Cadence Commercial Flow (Red Hat Linux)
+│   ├── rtl/                            ├── Verilog RTL (with Low-Power Clock Gating)
+│   ├── tb/                             ├── Simulation Testbench
+│   ├── constraints.sdc                 ├── Clean SDC Constraints
+│   ├── genus_synth.tcl                 ├── Cadence Genus Multi-Vt & CG Synthesis Script
+│   ├── innovus_pnr.tcl                 ├── Cadence Innovus Place & Route Script
+│   ├── run_cadence_45nm.sh             ├── 1-Click Master Shell Script
+│   ├── CADENCE_45NM_BEGINNERS_GUIDE.md ├── Step-by-Step Cadence Lab Guide
+│   └── results/                        └── Cadence Output Reports & Layout Files
+│
+└── flow_45nm_open_source/              ◄── [FLOW 3] Nangate 45nm Laptop Open-Source Flow
+    ├── rtl/                            ├── Verilog Source Code
+    ├── tb/                             ├── Simulation Testbench
+    ├── constraints.sdc                 ├── SDC Constraints
+    ├── synth_45nm.ys                   ├── Yosys Synthesis Script
+    ├── openroad_pnr_45nm.tcl           ├── OpenROAD Placement & Routing Script
+    ├── sta_45nm.tcl                    ├── OpenSTA Timing Analysis Script
+    ├── run_opensource_45nm.sh          ├── 1-Click Laptop Execution Script
+    ├── OPENSOURCE_45NM_BEGINNERS_GUIDE.md ├── Step-by-Step Laptop Guide
+    └── results/                        └── Netlists, DEF Layouts & Reports
 ```
 
 ---
 
-## 📊 ASIC Results (Example)
+## 🚀 Quick Execution Guide
 
-| Parameter | Value |
-|-----------|--------|
-| Area      | XX µm² |
-| Power     | XX mW |
-| Frequency | XX MHz |
+### 1️⃣ Run SkyWater 130nm Flow (Laptop / OpenLane)
+```bash
+cd "/home/jeevan/Desktop/my projects/major project/new_lsfr"
+bash flow_130nm_skywater/run_flow_130nm.sh
+```
+*📘 Full Guide: [SKY130NM_BEGINNERS_GUIDE.md](file:///home/jeevan/Desktop/my%20projects/major%20project/new_lsfr/flow_130nm_skywater/SKY130NM_BEGINNERS_GUIDE.md)*
+
+### 2️⃣ Run Cadence 45nm Flow (Red Hat Linux Lab)
+```bash
+cd "/home/jeevan/Desktop/my projects/major project/new_lsfr"
+bash flow_45nm_cadence/run_cadence_45nm.sh
+```
+*📘 Full Guide: [CADENCE_45NM_BEGINNERS_GUIDE.md](file:///home/jeevan/Desktop/my%20projects/major%20project/new_lsfr/flow_45nm_cadence/CADENCE_45NM_BEGINNERS_GUIDE.md)*
+
+### 3️⃣ Run Open-Source 45nm Flow (Laptop Yosys/OpenROAD/STA)
+```bash
+cd "/home/jeevan/Desktop/my projects/major project/new_lsfr"
+bash flow_45nm_open_source/run_opensource_45nm.sh
+```
+*📘 Full Guide: [OPENSOURCE_45NM_BEGINNERS_GUIDE.md](file:///home/jeevan/Desktop/my%20projects/major%20project/new_lsfr/flow_45nm_open_source/OPENSOURCE_45NM_BEGINNERS_GUIDE.md)*
 
 ---
 
-## 🔒 Applications
-- Lightweight cryptography
-- IoT security
-- Stream cipher implementations
-- Embedded secure systems
+## 🧠 Low-Power ASIC Features Implemented
+* **Multi-Vth Optimization**: Swaps non-critical gates to High-Vth (HVT) cells to reduce static leakage power by 60%–80%.
+* **Automatic Clock Gating**: Freezes internal clock tree when idle to reduce dynamic switching power by 40%–70%.
 
 ---
 
-## 📚 Future Improvements
-- Implementation in 18nm technology
-- Integration with AES for hybrid security
-- FPGA validation using Vivado
-
----
-
-## 👨‍💻 Author
+## 👨‍💻 Authors
 - Jeevan R  
-- Navyashree S
-- Pallavi Y
-- Kushal N S
-  
-Electronics and Communication Engineering  
-Don Bosco Institute of Technology
+- Navyashree S  
+- Pallavi Y  
+- Kushal N S  
 
----
-
-## 📜 License
-This project is licensed under the MIT License.
+Electronics and Communication Engineering — Don Bosco Institute of Technology

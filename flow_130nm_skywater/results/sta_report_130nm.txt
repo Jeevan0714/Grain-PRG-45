@@ -1,0 +1,7 @@
+OpenSTA 3.0.0 a14a16c3ad Copyright (c) 2025, Parallax Software, Inc.
+License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>
+
+This is free software, and you are free to change and redistribute it
+under certain conditions; type `show_copying' for details. 
+This program comes with ABSOLUTELY NO WARRANTY; for details type `show_warranty'.
+Error: 164 flow_130nm_skywater/results/synth_netlist_sky130.v line 69, syntax error

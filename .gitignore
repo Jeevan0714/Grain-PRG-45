@@ -1,10 +1,18 @@
-
-*.log
-*.out
-*.jou
-*.str
-*.wdb
-*.tmp
-*.sim
-sim/*
+# Waveforms & Simulation Dumps
 *.vcd
+*.vcd.idx
+sim_*
+sim
+
+# Synthesis & Tool Logs
+*.log
+*.log.*
+*.rpt
+*.cmd
+*.cmd.*
+*.jou
+*.pb
+
+# Output Build Directories
+/results/
+/sim/
