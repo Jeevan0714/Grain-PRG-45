@@ -4,6 +4,8 @@ This repository contains the complete design, RTL implementation, functional ver
 
 The project is structured into **3 self-contained ASIC implementation flows**:
 
+* 📄 **Project Assessment & Industry Rating Report**: [PROJECT_RATING_AND_INDUSTRY_EVALUATION.md](file:///home/jeevan/Desktop/my%20projects/major%20project/new_lsfr/PROJECT_RATING_AND_INDUSTRY_EVALUATION.md) (Score: **9.5 / 10 - Grade A+**)
+
 ---
 
 ## 🏗️ Repository Architecture
