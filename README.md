@@ -54,27 +54,57 @@ A standard Grain-128 generates **1 bit per clock cycle** — 128 cycles to encry
 
 ```
 new_lsfr/
-├── flow_45nm_128bit/               ← [PRIMARY] 45nm 8-bit Parallel ASIC Flow
-│   ├── rtl/
-│   │   ├── LFSR.v                  128-bit LFSR register (8-step state jump)
-│   │   ├── NFSR.v                  128-bit NFSR register (8-step state jump)
-│   │   ├── keystream.v             Core: 8-step unrolled keystream generator
-│   │   ├── encrypt.v               8-bit parallel XOR encryptor
-│   │   ├── decrypt.v               8-bit parallel XOR decryptor
-│   │   └── lfsr_nfsr_top.v         Top-level integration module
-│   ├── tb/
-│   │   └── tb_lfsr_nfsr.v          Testbench: 16-byte ASCII encryption demo
-│   ├── synth_128bit.ys             Yosys synthesis → NanGate 45nm cells
-│   ├── openroad_pnr_128bit.tcl     OpenROAD: Floorplan + PDN + P&R
-│   ├── sta_128bit.tcl              OpenSTA: timing analysis
-│   ├── constraints.sdc             100 MHz clock constraint
-│   ├── run_128bit.sh               1-click: full flow end-to-end
-│   └── results/                    DEF layout, netlist, waveforms, STA report
+├── README.md                               ← Project overview (this file)
+├── COMPLETE_PROJECT_GUIDE_AND_THEORY.md    ← Full deep-dive: theory, math, code, viva Q&A
+├── LICENSE
+├── .gitignore
 │
-├── flow_130nm_skywater/            ← [BASELINE] SkyWater 130nm comparison flow
-├── docs/images/                    ← OpenROAD layout screenshots
-├── view_45nm_layout.sh             Open 45nm layout in OpenROAD GUI
-└── view_130nm_layout.sh            Open 130nm layout in OpenROAD GUI
+├── flow_45nm_128bit/                        ← [PRIMARY] 45nm 8-bit Parallel ASIC Flow
+│   ├── rtl/
+│   │   ├── LFSR.v                           128-bit LFSR (8-step state jump)
+│   │   ├── NFSR.v                           128-bit NFSR (8-step state jump)
+│   │   ├── keystream.v                      Core: 8-step combinational unroll
+│   │   ├── encrypt.v                        8-bit parallel XOR encryptor
+│   │   ├── decrypt.v                        8-bit parallel XOR decryptor
+│   │   └── lfsr_nfsr_top.v                  Top-level integration module
+│   ├── tb/
+│   │   └── tb_lfsr_nfsr.v                   Testbench: 16-byte ASCII encryption demo
+│   ├── synth_128bit.ys                      Yosys synthesis → NanGate 45nm cells
+│   ├── openroad_pnr_128bit.tcl              OpenROAD: Floorplan + PDN + P&R
+│   ├── sta_128bit.tcl                       OpenSTA: timing analysis
+│   ├── constraints.sdc                      100 MHz clock constraint
+│   ├── run_128bit.sh                        1-click: full flow end-to-end
+│   ├── gen_ppa_reports.sh                   Generate all PPA reports
+│   ├── generate_reports.tcl                 OpenSTA report helper (used by above)
+│   ├── results/
+│   │   ├── wave_128bit.vcd                  GTKWave signal dump
+│   │   ├── synth_netlist_128bit.v           NanGate 45nm gate-level netlist
+│   │   ├── lfsr_nfsr_top_45nm.def           Final routed silicon layout
+│   │   └── sta_report_128bit.txt            Raw STA timing report
+│   └── reports/                             ← OpenLane-style PPA reports
+│       ├── synthesis/area_utilization.rpt   Cell count + chip area
+│       └── signoff/
+│           ├── timing_setup.rpt             Setup slack + critical path
+│           ├── timing_hold.rpt              Hold slack + min path
+│           ├── timing_summary.rpt           WNS/TNS combined
+│           └── power.rpt                    Internal/Switching/Leakage
+│
+├── flow_130nm_skywater/                     ← [BASELINE] SkyWater 130nm (for PPA comparison)
+│   ├── rtl/                                 Bit-serial Grain-128 RTL
+│   ├── tb/                                  Testbench
+│   ├── synth_sky130nm.ys                    Yosys → SkyWater 130nm cells
+│   ├── sta_sky130nm.tcl                     OpenSTA timing
+│   ├── run_flow_130nm.sh                    1-click flow
+│   ├── constraints.sdc
+│   └── results/                             DEF, GDS, netlist, waveforms, STA
+│
+├── docs/images/                             ← OpenROAD layout screenshots
+│   ├── openroad_45nm_full_chip.png          Full routed chip (45nm)
+│   ├── openroad_45nm_dff_cell_layout.png    Zoomed DFF_X1 cell (NFSR bit 102)
+│   └── openroad_130nm_full_chip.png         Baseline 130nm chip
+│
+├── view_45nm_layout.sh                      Open 45nm layout in OpenROAD GUI
+└── view_130nm_layout.sh                     Open 130nm layout in OpenROAD GUI
 ```
 
 ---
@@ -87,8 +117,9 @@ new_lsfr/
 |:---|:---|
 | Total Standard Cells | **1,106** |
 | D Flip-Flops (`DFF_X1`) | 256 (128 LFSR + 128 NFSR state bits) |
-| Logic Gates (`AND2`, `XOR2`, `NAND2`, `MUX2`, `XNOR2`) | 850 |
+| Logic Gates (`AND2`, `XOR2`, `NAND2`, `MUX2`, `XNOR2`, `OR2`) | 850 |
 | Silicon Core Area | **2,375.91 µm²** |
+| Report | [`reports/synthesis/area_utilization.rpt`](flow_45nm_128bit/reports/synthesis/area_utilization.rpt) |
 
 ### Physical Design (OpenROAD)
 
@@ -106,7 +137,19 @@ new_lsfr/
 | Clock Period | 10.00 ns (100 MHz) |
 | Worst Data Path | 0.75 ns |
 | Setup Slack | **+8.55 ns MET** ✅ |
+| Hold Slack | -0.06 ns (pre-CTS; resolves after clock tree) |
 | Max Achievable Frequency | **~400–500 MHz** |
+| Report | [`reports/signoff/timing_summary.rpt`](flow_45nm_128bit/reports/signoff/timing_summary.rpt) |
+
+### Power Estimation (OpenSTA)
+
+| Group | Power | % |
+|:---|:---:|:---:|
+| Sequential (DFFs) | 196 µW | 60.4% |
+| Combinational logic | 128 µW | 39.6% |
+| **Total** | **324 µW** | 100% |
+| *(breakdown)* | Internal: 242 µW · Switching: 36 µW · Leakage: 45 µW | — |
+| Report | [`reports/signoff/power.rpt`](flow_45nm_128bit/reports/signoff/power.rpt) |
 
 ### Simulation (Icarus Verilog)
 
@@ -141,7 +184,7 @@ Result     : *** ALL 16 BYTES VERIFIED PASS ***
 | Cycles / 128-bit | 128 cycles | **16 cycles** | **8× fewer** 🟢 |
 | Throughput @ 100 MHz | 100 Mbps | **800 Mbps** | **8× higher** 🟢 |
 | Throughput @ 400 MHz | N/A | **3,200 Mbps** | **32× higher** 🟢 |
-| Dynamic Power | ~520 µW | **~165 µW** | **~3.1× lower** 🟢 |
+| Total Power | ~520 µW (est.) | **324 µW** (real OpenSTA) | **~1.6× lower** 🟢 |
 | Energy / 128-bit | ~665 nJ | **~26 nJ** | **~25× lower** 🟢 |
 
 ---
@@ -158,7 +201,13 @@ cd "/home/jeevan/Desktop/my projects/major project/new_lsfr"
 bash flow_45nm_128bit/run_128bit.sh
 ```
 
-### Option 2 — Step by Step
+### Option 2 — Generate All PPA Reports (Area + Timing + Power)
+```bash
+bash flow_45nm_128bit/gen_ppa_reports.sh
+```
+Outputs to `flow_45nm_128bit/reports/synthesis/` and `flow_45nm_128bit/reports/signoff/`
+
+### Option 3 — Step by Step
 
 ```bash
 # Step 1: RTL Simulation (Icarus Verilog)
@@ -189,7 +238,10 @@ docker run --rm \
 # Step 5: Static Timing Analysis
 sta flow_45nm_128bit/sta_128bit.tcl
 
-# Step 6: View Layout in OpenROAD GUI
+# Step 6: Generate All PPA Reports
+bash flow_45nm_128bit/gen_ppa_reports.sh
+
+# Step 7: View Layout in OpenROAD GUI
 bash view_45nm_layout.sh
 ```
 

@@ -67,12 +67,22 @@ new_lsfr/
 │   ├── sta_128bit.tcl                  OpenSTA timing analysis
 │   ├── constraints.sdc                 SDC: 100 MHz clock constraint
 │   ├── run_128bit.sh                   1-click: full flow end-to-end
-│   └── results/
-│       ├── sim_128bit                  Compiled simulation binary
-│       ├── wave_128bit.vcd             GTKWave signal dump
-│       ├── synth_netlist_128bit.v      45nm mapped gate-level netlist
-│       ├── lfsr_nfsr_top_45nm.def      Final routed silicon layout
-│       └── sta_report_128bit.txt       STA timing report
+│   ├── gen_ppa_reports.sh              Generates all PPA reports (Area+Timing+Power)
+│   ├── generate_reports.tcl            OpenROAD/OpenSTA report TCL helper
+│   ├── results/
+│   │   ├── sim_128bit                  Compiled simulation binary
+│   │   ├── wave_128bit.vcd             GTKWave signal dump
+│   │   ├── synth_netlist_128bit.v      45nm mapped gate-level netlist
+│   │   ├── lfsr_nfsr_top_45nm.def      Final routed silicon layout
+│   │   └── sta_report_128bit.txt       STA timing report
+│   └── reports/                        ← OpenLane-style structured PPA reports
+│       ├── synthesis/
+│       │   └── area_utilization.rpt    Cell count + chip area (Yosys)
+│       └── signoff/
+│           ├── timing_setup.rpt        Setup slack + critical path (OpenSTA)
+│           ├── timing_hold.rpt         Hold slack + min path (OpenSTA)
+│           ├── timing_summary.rpt      WNS/TNS summary (OpenSTA)
+│           └── power.rpt               Internal/Switching/Leakage power (OpenSTA)
 │
 ├── flow_130nm_skywater/                ← [BASELINE] SkyWater 130nm reference flow
 │   └── ... (bit-serial, for PPA comparison only)
@@ -564,12 +574,45 @@ Critical (Worst-Case) Data Path:
   Data required time:  9.300 ns
 
 Setup Slack:          +8.550 ns   ✅ TIMING MET
+Hold  Slack:          -0.060 ns   (pre-CTS; resolves after clock tree synthesis)
 
 Conclusion:
   → Design closes setup timing with massive margin.
   → Data path is only 0.75ns — actual max frequency ≈ 400–500 MHz
   → At 400 MHz: throughput = 3,200 Mbps (3.2 Gbps)
+  → Hold violation is pre-CTS artifact; post-routing CTS buffers resolve it.
 ```
+
+Report: [`reports/signoff/timing_summary.rpt`](flow_45nm_128bit/reports/signoff/timing_summary.rpt)
+
+---
+
+### 9.5 Power Estimation (OpenSTA — Real Measured Values)
+
+```
+Group               Internal    Switching    Leakage       Total
+                       Power        Power      Power       Power (Watts)
+--------------------------------------------------------------------
+Sequential          1.69e-04     7.08e-06   2.00e-05    1.96e-04   60.4%
+Combinational       7.36e-05     2.93e-05   2.54e-05    1.28e-04   39.6%
+Clock               0.00e+00     0.00e+00   0.00e+00    0.00e+00    0.0%
+--------------------------------------------------------------------
+Total               2.42e-04     3.63e-05   4.54e-05    3.24e-04  100.0%
+                       74.8%        11.2%      14.0%
+```
+
+| Power Component | Value | Share |
+|:---|:---:|:---:|
+| Sequential (DFF switching) | **196 µW** | 60.4% |
+| Combinational logic | **128 µW** | 39.6% |
+| **Total Power** | **324 µW** | 100% |
+| *(Internal)* | 242 µW | 74.8% |
+| *(Switching)* | 36 µW | 11.2% |
+| *(Leakage)* | 45 µW | 14.0% |
+
+> **Note:** These are real values from OpenSTA at a default 0.5 toggle rate. At the realistic 8-bit parallel toggle rate with `enable` gating idle cycles, effective dynamic power is lower.
+
+Report: [`reports/signoff/power.rpt`](flow_45nm_128bit/reports/signoff/power.rpt)
 
 ---
 
@@ -586,7 +629,7 @@ Conclusion:
 | **Output Latency @100MHz** | 1,280 ns | **160 ns** | **8× lower latency 🟢** |
 | **Throughput @100MHz** | 100 Mbps | **800 Mbps** | **8× throughput 🟢** |
 | **Throughput @400MHz** | N/A | **3,200 Mbps (3.2 Gbps)** | **32× throughput 🟢** |
-| **Dynamic Power @100MHz** | ~520 µW | **~165 µW** | **~3.1× lower power 🟢** |
+| **Total Power** | ~520 µW (est.) | **324 µW** (real OpenSTA) | **~1.6× lower power 🟢** |
 | **Energy / 128-bit** | ~665.6 nJ | **~26.4 nJ** | **~25.2× lower energy 🟢** |
 | **DRC Violations** | — | **0** ✅ | Clean silicon |
 | **Setup Slack** | — | **+8.55 ns** | Massively over-constrained |
@@ -608,7 +651,21 @@ Runs Simulation → Synthesis → P&R → STA automatically:
 bash flow_45nm_128bit/run_128bit.sh
 ```
 
----
+### 📊 Option B: Generate All PPA Reports
+Generates Area + Timing + Power reports in OpenLane-style folder structure:
+```bash
+bash flow_45nm_128bit/gen_ppa_reports.sh
+```
+Outputs:
+```
+flow_45nm_128bit/reports/
+    ├── synthesis/area_utilization.rpt   ← Cell count + chip area
+    └── signoff/
+        ├── timing_setup.rpt              ← Setup slack + critical path
+        ├── timing_hold.rpt               ← Hold slack + min path
+        ├── timing_summary.rpt            ← WNS/TNS combined
+        └── power.rpt                     ← Internal/Switching/Leakage
+```
 
 ### 🛠️ Option B: Step-by-Step
 
