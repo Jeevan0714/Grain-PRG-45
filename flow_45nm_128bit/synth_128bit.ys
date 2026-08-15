@@ -1,0 +1,35 @@
+# -----------------------------------------------------------------------------
+# Yosys Synthesis Script — Grain-128 LFSR-NFSR 128-bit (NanGate 45nm Mapped)
+# -----------------------------------------------------------------------------
+
+# 1. Read all Verilog RTL Source Files
+read_verilog flow_45nm_128bit/rtl/LFSR.v \
+             flow_45nm_128bit/rtl/NFSR.v \
+             flow_45nm_128bit/rtl/keystream.v \
+             flow_45nm_128bit/rtl/encrypt.v \
+             flow_45nm_128bit/rtl/decrypt.v \
+             flow_45nm_128bit/rtl/lfsr_nfsr_top.v
+
+# 2. Set Top-Level Module
+hierarchy -check -top lfsr_nfsr_top
+
+# 3. Translate RTL processes to generic gates
+proc
+opt
+fsm
+opt
+
+# 4. Map to NanGate 45nm Standard Cells (Flip-Flops + Logic Gates)
+techmap
+dfflibmap -liberty /home/jeevan/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+abc -liberty /home/jeevan/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib
+
+# 5. Flatten and Clean
+flatten
+clean
+
+# 6. Export Synthesised 45nm Netlist
+write_verilog -noattr flow_45nm_128bit/results/synth_netlist_128bit.v
+
+# 7. Print Cell Utilisation and Real 45nm Area Report
+stat -liberty /home/jeevan/vlsi_libraries/nangate45/NangateOpenCellLibrary_typical.lib

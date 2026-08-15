@@ -3,7 +3,12 @@
 # -----------------------------------------------------------------------------
 
 # 1. Read Verilog RTL Source Files
-read_verilog flow_130nm_skywater/rtl/LFSR.v flow_130nm_skywater/rtl/NFSR.v flow_130nm_skywater/rtl/keystream.v flow_130nm_skywater/rtl/encrypt.v flow_130nm_skywater/rtl/decrypt.v flow_130nm_skywater/rtl/lfsr_nfsr_top.v
+read_verilog flow_130nm_skywater/rtl/LFSR.v \
+             flow_130nm_skywater/rtl/NFSR.v \
+             flow_130nm_skywater/rtl/keystream.v \
+             flow_130nm_skywater/rtl/encrypt.v \
+             flow_130nm_skywater/rtl/decrypt.v \
+             flow_130nm_skywater/rtl/lfsr_nfsr_top.v
 
 # 2. Set Top Level Module
 hierarchy -check -top lfsr_nfsr_top
@@ -14,7 +19,8 @@ opt
 fsm
 opt
 
-# 4. Map Logic Gates
+# 4. Map Logic Gates and Flip-Flops
+techmap
 abc -g AND,NAND,OR,NOR,XOR,XNOR,MUX
 
 # 5. Flatten & Clean
@@ -22,7 +28,7 @@ flatten
 clean
 
 # 6. Export Synthesized Netlist
-write_verilog flow_130nm_skywater/results/synth_netlist_sky130.v
+write_verilog -noattr flow_130nm_skywater/results/synth_netlist_sky130.v
 
 # 7. Print Cell Utilization Report
 stat
