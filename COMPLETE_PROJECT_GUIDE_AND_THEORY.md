@@ -1,4 +1,4 @@
-# 📘 Integrated LFSR–NFSR 128-bit Grain Stream Cipher ASIC on 45nm
+# 📘 Grain-PRG 45 — Integrated LFSR–NFSR 128-bit Grain Stream Cipher ASIC on 45nm
 ## 🎓 Complete Technical Documentation & Teammate Study Guide (Zero to Expert)
 
 ---
@@ -49,7 +49,7 @@ In modern Internet-of-Things (IoT), Bluetooth Low Energy (BLE 5.0), and embedded
 # 2. Repository Structure
 
 ```
-Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech/
+Grain-PRG-45/
 ├── README.md                           ← Quick-reference project overview
 ├── COMPLETE_PROJECT_GUIDE_AND_THEORY.md← This file: full deep-dive guide
 │
@@ -228,7 +228,7 @@ State 8:  L_next = {Ls7[126:0], Lfb7}, N_next
 
 # 6. Line-by-Line Verilog RTL Code Walkthrough
 
-All RTL source code is located in [`flow_45nm_128bit/rtl/`](file:///home/jeevan/Desktop/my%20projects/major%20project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech/flow_45nm_128bit/rtl/).
+All RTL source code is located in [`flow_45nm_128bit/rtl/`](flow_45nm_128bit/rtl/).
 
 ---
 
@@ -626,7 +626,7 @@ Report: [`reports/signoff/power.rpt`](flow_45nm_128bit/reports/signoff/power.rpt
 
 All commands should be executed from the project root:
 ```bash
-cd "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech"
+cd "/home/jeevan/Desktop/my projects/Grain-PRG-45"
 ```
 
 ---
@@ -811,7 +811,7 @@ An interactive web application is included in `visualizer/`.
 
 ```bash
 # 1. Run local web server
-python3 -m http.server 8000 --directory "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech/visualizer"
+python3 -m http.server 8000 --directory "/home/jeevan/Desktop/my projects/Grain-PRG-45/visualizer"
 
 # 2. Open in browser
 xdg-open http://localhost:8000

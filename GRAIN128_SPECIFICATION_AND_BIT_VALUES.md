@@ -82,7 +82,7 @@ Below is the complete, bit-by-bit specification showing the **tap role** and **i
 | **91** | State Storage | `1` | **Linear Keystream Tap** ($Z$) | `1` |
 | **90** | State Storage | `1` | State Storage | `0` |
 | **89** | **LFSR Feedback** (`Lfb`) | `1` | State Storage | `1` |
-| **88** | State Storage | `1` | State Storage | `1` |
+nooo redesign thesee , i want a very less content page , not thesee bigg. keep content less but must be efective . let the projects have veryyy small detailss. redesign to make it look simole and profeesional , nt all thngs are equiredd, keep only which tools and thngs give weightage .| **88** | State Storage | `1` | State Storage | `1` |
 | **87** | State Storage | `0` | **Filter $h(x)$ Term 4**, Product (`b87 · b79`) | `1` |
 | **86..83** | State Storage | `0` | State Storage | `1` |
 | **82** | State Storage | `0` | **Linear Keystream Tap** ($Z$), Spec Constant | **`1`** |

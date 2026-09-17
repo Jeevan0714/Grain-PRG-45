@@ -1,4 +1,4 @@
-# 🔐 128-bit Grain-128 Stream Cipher ASIC — NanGate 45nm
+# 🔐 Grain-PRG 45 — 128-bit Stream Cipher ASIC on NanGate 45nm
 
 > **Integrated LFSR–NFSR with 8-Bit Parallel Combinational Unrolling**  
 > Department of ECE · Don Bosco Institute of Technology  
@@ -37,7 +37,7 @@ To run and view the visualizer web app in your browser:
 
 ```bash
 # 1. Start local web server (runs on port 8000)
-python3 -m http.server 8000 --directory "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech/visualizer"
+python3 -m http.server 8000 --directory "/home/jeevan/Desktop/my projects/Grain-PRG-45/visualizer"
 
 # 2. Open in your default browser
 xdg-open http://localhost:8000
@@ -84,7 +84,7 @@ A standard Grain-128 generates **1 bit per clock cycle** — 128 cycles to encry
 ## 🏗️ Repository Structure
 
 ```
-Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech/
+Grain-PRG-45/
 ├── README.md                               ← Project overview (this file)
 ├── COMPLETE_PROJECT_GUIDE_AND_THEORY.md    ← Full deep-dive: theory, math, code, viva Q&A
 ├── LICENSE
@@ -229,27 +229,27 @@ Result     : *** ALL 16 BYTES VERIFIED PASS ***
 ## 🚀 Quick Execution Guide
 
 ### IMPORTANT: Terminal Working Directory
-Make sure your terminal is in the project root folder **`Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech`**:
+Make sure your terminal is in the project root folder **`Grain-PRG-45`**:
 
 ```bash
-cd "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech"
+cd "/home/jeevan/Desktop/my projects/Grain-PRG-45"
 ```
 
 ---
 
 ### Option 1 — 1-Click Full ASIC Flow (Simulation + Synthesis + P&R + STA)
-Run from project root `Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech`:
+Run from project root `Grain-PRG-45`:
 ```bash
-cd "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech"
+cd "/home/jeevan/Desktop/my projects/Grain-PRG-45"
 bash flow_45nm_128bit/run_128bit.sh
 ```
 
 ---
 
 ### Option 2 — Generate All PPA Reports (Area + Timing + Power)
-Run from project root `Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech`:
+Run from project root `Grain-PRG-45`:
 ```bash
-cd "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech"
+cd "/home/jeevan/Desktop/my projects/Grain-PRG-45"
 bash flow_45nm_128bit/gen_ppa_reports.sh
 ```
 Outputs report files to `flow_45nm_128bit/reports/synthesis/` and `flow_45nm_128bit/reports/signoff/`.
@@ -257,16 +257,16 @@ Outputs report files to `flow_45nm_128bit/reports/synthesis/` and `flow_45nm_128
 ---
 
 ### Option 3 — View Silicon Layout in OpenROAD GUI
-`view_45nm_layout.sh` is located in the root `Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech` folder:
+`view_45nm_layout.sh` is located in the root `Grain-PRG-45` folder:
 ```bash
-cd "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech"
+cd "/home/jeevan/Desktop/my projects/Grain-PRG-45"
 bash view_45nm_layout.sh
 ```
 
 ---
 
 ### Option 4 — If You Are Already Inside `flow_45nm_128bit/`
-If your terminal current directory is `Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech/flow_45nm_128bit`:
+If your terminal current directory is `Grain-PRG-45/flow_45nm_128bit`:
 ```bash
 # If you are inside flow_45nm_128bit, run scripts directly without the prefix:
 bash run_128bit.sh
@@ -278,10 +278,10 @@ bash ../view_45nm_layout.sh
 
 ---
 
-### Option 5 — Step-by-Step Command Execution (From `Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech` Root)
+### Option 5 — Step-by-Step Command Execution (From `Grain-PRG-45` Root)
 
 ```bash
-cd "/home/jeevan/Desktop/my projects/major project/Design-and-ASIC-Implementation-of-Integrated-LFSR-NFSR-Based-Pseudorandom-Generator-Using-45nm-tech"
+cd "/home/jeevan/Desktop/my projects/Grain-PRG-45"
 
 # Step 1: RTL Simulation (Icarus Verilog)
 iverilog -o flow_45nm_128bit/results/sim_128bit \
